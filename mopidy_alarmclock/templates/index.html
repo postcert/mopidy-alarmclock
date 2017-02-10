@@ -67,6 +67,15 @@
             </div>
 
             <div class="form-group">
+                <label class="col-md-4 control-label" for="checkboxes">Repeat Alarm</label>
+                <div class="col-md-4">
+                    <label class="checkbox-inline" for="checkboxes-1">
+                        <input name="repeat" id="checkboxes-1" value="1" type="checkbox"{% if config['def_repeat'] %} checked="checked"{% end %}>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
               <label class="col-md-4 control-label" for="volume">Alarm volume</label>
               <div class="col-md-4">
                 <input type="range" name="volume" id="volume" class="form-control" min="1" max="100" value="{{ config['def_volume'] }}" title="{{ config['def_volume'] }}" onchange="this.title=this.value; this.style.backgroundColor='rgb(255, '+Math.round(this.value*2.55)+', '+Math.round(this.value*2.55)+')';">

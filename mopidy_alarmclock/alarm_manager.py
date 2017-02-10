@@ -18,6 +18,7 @@ class AlarmManager(object):
     clock_datetime = None  # datetime of when the alarm clock begins to play music
     playlist = None  # URI of playlist to play
     random_mode = None  # True if the playlist will be played in shuffle mode
+    repeat_mode = None # True if the alarm is to repeat daily
     volume = None  # Alarm volume
     volume_increase_seconds = None  # Seconds to full volume
     core = None
@@ -46,6 +47,7 @@ class AlarmManager(object):
         self.clock_datetime = None
         self.playlist = None
         self.random_mode = None
+        self.repeat_mode = None
         self.volume = None
         self.volume_increase_seconds = None
 
@@ -61,10 +63,11 @@ class AlarmManager(object):
                         break
                 time.sleep(0.05)
 
-    def set_alarm(self, clock_datetime, playlist, random_mode, volume, volume_increase_seconds):
+    def set_alarm(self, clock_datetime, playlist, random_mode, repeat_mode, volume, volume_increase_seconds):
         self.clock_datetime = clock_datetime
         self.playlist = playlist
         self.random_mode = random_mode
+        self.repeat_mode = repeat_mode
         self.volume = volume
         self.volume_increase_seconds = volume_increase_seconds
         self.state = states.WAITING
@@ -105,8 +108,11 @@ class AlarmManager(object):
 
         self.core.playback.play()
 
-        self.reset()
-        self.state = states.DISABLED
+        if self.repeat_mode:
+            self.set_alarm(self, self.playlist, self.random_mode, self.repeat_mode, self.volume, self.volume_increase_seconds)
+        else:
+            self.reset()
+            self.state = states.DISABLED
 
     def idle(self):
         if self.state == states.WAITING:  # alarm can be canceled, check if not

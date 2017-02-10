@@ -26,6 +26,7 @@ class Extension(ext.Extension):
         schema['def_time'] = config.String()
         schema['def_playlist'] = config.String(optional=True)
         schema['def_random'] = config.Boolean()
+        schema['def_repeat'] = config.Boolean()
         schema['def_volume'] = config.Integer()
         schema['def_vol_inc_duration'] = config.Integer()
         return schema

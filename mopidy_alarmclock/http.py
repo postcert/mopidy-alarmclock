@@ -55,6 +55,7 @@ class SetAlarmRequestHandler(BaseRequestHandler):
         # Based on RE found here http://stackoverflow.com/a/7536768/927592
         matched = re.match('^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5]?[0-9])$', time_string)
         random_mode = bool(self.get_argument('random', False))
+        repeat_mode = bool(self.get_argument('repeat', False))
 
         # Get and sanitize volume and seconds to full volume
         volume = int(self.get_argument('volume', 100))
@@ -72,7 +73,7 @@ class SetAlarmRequestHandler(BaseRequestHandler):
             if datetime.datetime.now() >= dt:
                 dt += datetime.timedelta(days=1)
 
-            self.alarm_manager.set_alarm(dt, playlist, random_mode, volume, volume_increase_seconds)
+            self.alarm_manager.set_alarm(dt, playlist, random_mode, repeat_mode, volume, volume_increase_seconds)
             self.send_message('ok')
         else:
             self.send_message('format')
