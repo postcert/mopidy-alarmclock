@@ -109,7 +109,7 @@ class AlarmManager(object):
         self.core.playback.play()
 
         if self.repeat_mode:
-            self.set_alarm(self, self.playlist, self.random_mode, self.repeat_mode, self.volume, self.volume_increase_seconds)
+            self.set_alarm(self.clock_datetime, self.playlist, self.random_mode, self.repeat_mode, self.volume, self.volume_increase_seconds)
         else:
             self.reset()
             self.state = states.DISABLED
