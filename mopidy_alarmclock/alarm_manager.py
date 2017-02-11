@@ -114,8 +114,10 @@ class AlarmManager(object):
         self.core.playback.play()
 
         if self.repeat_mode:
+            self.logger.debug("Start: repeat\n with state: {}".format(self.state))
             self.set_alarm(self.clock_datetime + datetime.timedelta(days=1), self.playlist, self.random_mode, self.repeat_mode, self.volume, self.volume_increase_seconds)
         else:
+            self.logger.debug("Start: reset")
             self.reset()
             self.state = states.DISABLED
 
@@ -130,6 +132,7 @@ class AlarmManager(object):
                 self.idle_timer = t  # Atomically set idle_timer to next (alive!!!) timer
 
     def adjust_volume(self, target_volume, increase_duration, step_no):
+        self.logger.debug("Start: adjust_volume")
         number_of_steps = min(target_volume, increase_duration)
         current_volume = None
         try:
