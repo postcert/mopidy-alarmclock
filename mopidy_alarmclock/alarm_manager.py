@@ -5,7 +5,7 @@ import datetime
 import os
 import time
 import logging
-from threading import Timer
+from threading import Timer, Thread
 
 
 # Enum of states
@@ -117,7 +117,8 @@ class AlarmManager(object):
 
         if self.repeat_mode:
             self.logger.debug("Start: repeat\n with state: {}".format(self.state))
-            self.set_alarm(self.clock_datetime + datetime.timedelta(days=1), self.playlist, self.random_mode, self.repeat_mode, self.volume, self.volume_increase_seconds)
+            set_alarm_thread = Thread(target= self.set_alarm, args=(self.clock_datetime + datetime.timedelta(days=1), self.playlist, self.random_mode, self.repeat_mode, self.volume, self.volume_increase_seconds))
+            set_alarm_thread.start()
         else:
             self.logger.debug("Start: reset")
             self.reset()
