@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 import datetime
 import os
 import time
+import logging
 from threading import Timer
 
 
@@ -24,6 +25,7 @@ class AlarmManager(object):
     core = None
     state = states.DISABLED
     idle_timer = None
+    logger = logging.getLogger("mopidy_alarmclock")
 
     def get_core(self, core):
         self.core = core
@@ -52,6 +54,7 @@ class AlarmManager(object):
         self.volume_increase_seconds = None
 
     def cancel(self):
+        self.logger.debug("Start: cancel")
         self.reset()
         self.state = states.CANCELED
         if self.idle_timer is not None:
@@ -64,6 +67,7 @@ class AlarmManager(object):
                 time.sleep(0.05)
 
     def set_alarm(self, clock_datetime, playlist, random_mode, repeat_mode, volume, volume_increase_seconds):
+        self.logger.debug("Start: set_alarm\n with time: {}".format(clock_datetime))
         self.clock_datetime = clock_datetime
         self.playlist = playlist
         self.random_mode = random_mode
@@ -84,6 +88,7 @@ class AlarmManager(object):
         self.idle()
 
     def play(self):
+        self.logger.debug("Start: play")
         self.core.playback.stop()
         self.core.tracklist.clear()
 
@@ -115,6 +120,7 @@ class AlarmManager(object):
             self.state = states.DISABLED
 
     def idle(self):
+        self.logger.debug("Start: idle\n with state: {}".format(self.state))
         if self.state == states.WAITING:  # alarm can be canceled, check if not
             if datetime.datetime.now() >= self.clock_datetime:  # time to make some noise
                 self.play()
