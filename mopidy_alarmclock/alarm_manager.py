@@ -77,7 +77,9 @@ class AlarmManager(object):
         self.state = states.WAITING
 
         if self.idle_timer is not None:
+            self.logger.debug("Idle timer already present")
             while True:
+                self.logger.debug("Waiting for timer death?")
                 t = self.idle_timer
                 t.cancel()
                 if not t.is_alive():
