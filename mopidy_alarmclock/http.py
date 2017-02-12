@@ -1,6 +1,5 @@
 from __future__ import unicode_literals
-from week import Week
-from weekday import Weekday
+from weekalarmhandler import WeekAlarmHandler
 
 import datetime
 import os
@@ -57,7 +56,7 @@ class SetAlarmRequestHandler(BaseRequestHandler):
         raw_times = []
         days = ("sun", "mon", "tue", "wed", "thu", "fri", "sat")
         for day in days:
-            alarm_times.append(self.get_argument("time_{}".format(day)), None)
+            raw_times.append(self.get_argument("time_{}".format(day)), None)
 
         converted_times = []
         # Sanity check times
@@ -71,11 +70,11 @@ class SetAlarmRequestHandler(BaseRequestHandler):
             time_comp = map(lambda x: int(x), match.groups())
             converted_times.append(datetime.time(hour=time_comp[0], minute=time_comp[1]))
 
+        alarm_week = WeekAlarmHandler()
         for day_index, converted_time in converted_times:
+            alarm_week.set_alarm(day_index, converted_time)
 
 
-        # Convert to timedate.time's
-        matched = re.match('^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5]?[0-9])$', time_string)
         random_mode = bool(self.get_argument('random', False))
 
         # Get and sanitize volume and seconds to full volume
@@ -86,18 +85,8 @@ class SetAlarmRequestHandler(BaseRequestHandler):
         if volume_increase_seconds < 0 or volume_increase_seconds > 300:
             volume_increase_seconds = 30
 
-        if matched:
-            time_comp = map(lambda x: int(x), matched.groups())
-            time = datetime.time(hour=time_comp[0], minute=time_comp[1])
-
-            dt = datetime.datetime.combine(datetime.datetime.now(), time)
-            if datetime.datetime.now() >= dt:
-                dt += datetime.timedelta(days=1)
-
-            self.alarm_manager.set_alarm(dt, playlist, random_mode, volume, volume_increase_seconds)
-            self.send_message('ok')
-        else:
-            self.send_message('format')
+        self.alarm_manager.set_alarm(alarm_week, playlist, random_mode, volume, volume_increase_seconds)
+        self.send_message('ok')
 
 
 class CancelAlarmRequestHandler(BaseRequestHandler):

@@ -16,7 +16,7 @@ class states:
 
 
 class AlarmManager(object):
-    clock_datetime = None  # datetime of when the alarm clock begins to play music
+    alarm_week = None  # Week of datetime.time's
     playlist = None  # URI of playlist to play
     random_mode = None  # True if the playlist will be played in shuffle mode
     repeat_mode = None # True if the alarm is to repeat daily
@@ -65,9 +65,9 @@ class AlarmManager(object):
                         break
                 time.sleep(0.05)
 
-    def set_alarm(self, clock_datetime, playlist, random_mode, volume, volume_increase_seconds):
-        self.logger.debug("Start: set_alarm\n with time: {}".format(clock_datetime))
-        self.clock_datetime = clock_datetime
+    def set_alarm(self, alarm_week, playlist, random_mode, volume, volume_increase_seconds):
+        self.logger.debug("Start: set_alarm\n with time: {}".format(alarm_week))
+        self.alarm_week = alarm_week
         self.playlist = playlist
         self.random_mode = random_mode
         self.volume = volume
@@ -126,10 +126,11 @@ class AlarmManager(object):
     def idle(self):
         self.logger.debug("Start: idle\n with state: {}".format(self.state))
         if self.state == states.WAITING:  # alarm can be canceled, check if not
-            if datetime.datetime.now() >= self.clock_datetime:  # time to make some noise
-                self.play()
+            if self.alarm_week.ring_alarm():  # time to make some noise
+                play_thread = Thread(target=self.play)
+                play_thread.start()
             else:
-                t = Timer(5, self.idle)  # check each 5 seconds if the alarm must start or not
+                t = Timer(30, self.idle)  # check each 5 seconds if the alarm must start or not
                 t.start()
                 self.idle_timer = t  # Atomically set idle_timer to next (alive!!!) timer
 
