@@ -1,4 +1,6 @@
 from __future__ import unicode_literals
+from week import Week
+from weekday import Weekday
 
 import datetime
 import os
@@ -51,11 +53,30 @@ class SetAlarmRequestHandler(BaseRequestHandler):
     def post(self):
         playlist = self.get_argument('playlist', None)
 
-        time_string = self.get_argument('time', None)
-        # Based on RE found here http://stackoverflow.com/a/7536768/927592
+        # Ugly block for getting times
+        raw_times = []
+        days = ("sun", "mon", "tue", "wed", "thu", "fri", "sat")
+        for day in days:
+            alarm_times.append(self.get_argument("time_{}".format(day)), None)
+
+        converted_times = []
+        # Sanity check times
+        for alarm_time in raw_times:
+            # Based on RE found here http://stackoverflow.com/a/7536768/927592
+            match = re.match('^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5]?[0-9])$', alarm_time)
+            if not match:
+                self.send_message('format')
+                return
+
+            time_comp = map(lambda x: int(x), match.groups())
+            converted_times.append(datetime.time(hour=time_comp[0], minute=time_comp[1]))
+
+        for day_index, converted_time in converted_times:
+
+
+        # Convert to timedate.time's
         matched = re.match('^([0-9]|0[0-9]|1[0-9]|2[0-3]):([0-5]?[0-9])$', time_string)
         random_mode = bool(self.get_argument('random', False))
-        repeat_mode = bool(self.get_argument('repeat', False))
 
         # Get and sanitize volume and seconds to full volume
         volume = int(self.get_argument('volume', 100))
@@ -73,7 +94,7 @@ class SetAlarmRequestHandler(BaseRequestHandler):
             if datetime.datetime.now() >= dt:
                 dt += datetime.timedelta(days=1)
 
-            self.alarm_manager.set_alarm(dt, playlist, random_mode, repeat_mode, volume, volume_increase_seconds)
+            self.alarm_manager.set_alarm(dt, playlist, random_mode, volume, volume_increase_seconds)
             self.send_message('ok')
         else:
             self.send_message('format')

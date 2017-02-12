@@ -49,7 +49,6 @@ class AlarmManager(object):
         self.clock_datetime = None
         self.playlist = None
         self.random_mode = None
-        self.repeat_mode = None
         self.volume = None
         self.volume_increase_seconds = None
 
@@ -66,12 +65,11 @@ class AlarmManager(object):
                         break
                 time.sleep(0.05)
 
-    def set_alarm(self, clock_datetime, playlist, random_mode, repeat_mode, volume, volume_increase_seconds):
+    def set_alarm(self, clock_datetime, playlist, random_mode, volume, volume_increase_seconds):
         self.logger.debug("Start: set_alarm\n with time: {}".format(clock_datetime))
         self.clock_datetime = clock_datetime
         self.playlist = playlist
         self.random_mode = random_mode
-        self.repeat_mode = repeat_mode
         self.volume = volume
         self.volume_increase_seconds = volume_increase_seconds
         self.state = states.WAITING
@@ -115,6 +113,7 @@ class AlarmManager(object):
 
         self.core.playback.play()
 
+        # TODO: Refactor for adding next playtime?
         if self.repeat_mode:
             self.logger.debug("Start: repeat\n with state: {}".format(self.state))
             set_alarm_thread = Thread(target= self.set_alarm, args=(self.clock_datetime + datetime.timedelta(days=1), self.playlist, self.random_mode, self.repeat_mode, self.volume, self.volume_increase_seconds))
