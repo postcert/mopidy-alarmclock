@@ -2,23 +2,9 @@
 Mopidy-AlarmClock
 ****************************
 
-.. image:: https://img.shields.io/pypi/v/Mopidy-AlarmClock.svg?style=flat
-    :target: https://pypi.python.org/pypi/Mopidy-AlarmClock/
-    :alt: Latest PyPI version
-
-.. image:: https://img.shields.io/pypi/dm/Mopidy-AlarmClock.svg?style=flat
-    :target: https://pypi.python.org/pypi/Mopidy-AlarmClock/
-    :alt: Number of PyPI downloads
-
-.. image:: https://travis-ci.org/DavisNT/mopidy-alarmclock.svg?branch=develop
-    :target: https://travis-ci.org/DavisNT/mopidy-alarmclock
-    :alt: Travis-CI build status
-
-.. image:: https://coveralls.io/repos/DavisNT/mopidy-alarmclock/badge.svg?branch=develop
-    :target: https://coveralls.io/r/DavisNT/mopidy-alarmclock
-    :alt: Coveralls test coverage
-
 A Mopidy extension for using it as an alarm clock.
+I've added a quick patch for repeat.
+
 
 Mopidy-AlarmClock was originally created by `Mathieu Xhonneux <https://github.com/Zashas>`_ and now is maintained by `Davis Mosenkovs <https://github.com/DavisNT>`_.
 
@@ -45,6 +31,9 @@ Optionally alarm defaults can be configured in ``mopidy.conf`` config file (the 
     # Default state of Random Track Order (true or false)
     def_random = false
 
+    # Default state of Repeat Daily (true or false)
+    def_repeat = false
+
     # Default alarm volume (integer, 1 to 100)
     def_volume = 100
 
@@ -67,6 +56,12 @@ Project resources
 
 Changelog
 =========
+
+v0.1.X
+----------------------------------------
+
+- Quick mess of a patch to add daily repeated alarms
+- Cleaner patch with day of the week alarm times coming once the UI is finished!
 
 v0.1.6
 ----------------------------------------
